@@ -33,13 +33,3 @@ export default function Home() {
     </section>
   );
 }
-
-// Export the rewrites configuration
-export function rewrites() {
-  return [
-    {
-      source: "/hello/:path*",
-      destination: "http://localhost:5000/hello/:path*",
-    },
-  ];
-}

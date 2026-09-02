@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# ASLang
 
-## Getting Started
+An early hackathon prototype for learning American Sign Language. The project has a Next.js frontend, optional Firebase authentication/progress tracking, and an experimental local Python camera/classification service.
 
-First, run the development server:
+## Run the frontend
+
+Use Node.js 18 or newer, then run:
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The home page and lesson navigation work without any credentials.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Restore sign-in and saved progress
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+The original Firebase keys were intentionally not committed. Copy `.env.example` to `.env.local` and fill in the Firebase web-app settings for the `aslang-b56b7` project (or a replacement Firebase project):
 
-## Learn More
+```bash
+cp .env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+The project needs Google Authentication enabled and a Realtime Database at the configured URL. Until those variables are supplied, pressing **Sign In** reports that Firebase needs configuration; the rest of the frontend remains usable.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Historical camera lesson
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The first lesson includes an unfinished webcam experiment in `CV/`. It expects a local webcam and listens on port 5000. This component has not been restored or validated; the frontend expects Socket.IO `video_frame` events, while the backend exposes an HTTP `/video` stream and only logs Socket.IO connections. It may therefore start without displaying a stream.
 
-## Deploy on Vercel
+The original dependency list also omits `Flask` and `Flask-SocketIO`, even though `webcam.py` imports them. They must be installed manually to experiment with the historical service. Use Python 3.10 or 3.11 (TensorFlow 2.14 does not support newer Python releases), then from a second terminal:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+cd CV
+python3.10 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+pip install Flask Flask-SocketIO
+python webcam.py
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+The model files are tracked in `CV/Model`; the service needs permission to use your webcam. No changes have been made to make this experiment functional.
+
+## Checks
+
+```bash
+npm run lint
+npm run build
+```
+
+`npm run build` succeeds without Firebase values. The build currently reports dependency warnings for optional native modules and outdated browser-compatibility data; these do not prevent the application from running.

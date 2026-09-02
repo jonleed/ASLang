@@ -3,7 +3,7 @@ import { onValue, ref } from 'firebase/database';
 
 
 let userId;
-if(auth.currentUser) {
+if(auth?.currentUser && db) {
   userId = auth.currentUser.uid;
   if(!ref(db, 'users/' + userId))
     writeUserData(userId, 0);
@@ -13,7 +13,7 @@ if(auth.currentUser) {
 
 let numDone = 0;
 
-if(userId) {
+if(userId && db) {
   const numDoneRef = ref(db, 'users/' + userId + '/numDone') 
   onValue(numDoneRef, (snapshop) => {
     const data = snapshop.val();

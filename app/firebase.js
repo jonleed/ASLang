@@ -1,5 +1,5 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -17,14 +17,24 @@ const firebaseConfig = {
   databaseURL: "https://aslang-b56b7-default-rtdb.firebaseio.com"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const isFirebaseConfigured = Object.entries(firebaseConfig)
+  .filter(([key]) => key !== "databaseURL")
+  .every(([, value]) => Boolean(value));
+
+// Keep the app browseable when the original Firebase credentials are unavailable.
+const app = isFirebaseConfigured
+  ? (getApps().length ? getApp() : initializeApp(firebaseConfig))
+  : null;
 
 // Initialize Realtime Database and get a reference to the service
-export const auth = getAuth(app);
-export const db = getDatabase(app);
+export const auth = app ? getAuth(app) : null;
+export const db = app ? getDatabase(app) : null;
 
 export function writeUserData(userId, completed) {
+    if (!db) {
+      throw new Error("Firebase is not configured. Add the NEXT_PUBLIC_FIREBASE_* values to .env.local.");
+    }
+
     const reference = ref(db, 'users/' + userId);
 
     set(reference, {
