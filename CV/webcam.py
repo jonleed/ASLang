@@ -4,16 +4,12 @@ from cvzone.HandTrackingModule import HandDetector
 from cvzone.ClassificationModule import Classifier
 import numpy as np
 import math
-from flask_socketio import SocketIO
-import time
 import time
 
 app = Flask(__name__)
 
 # Open the default camera (webcam)
 cap = cv2.VideoCapture(0)
-
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:3000")
 
 
 # Function to generate video frames
