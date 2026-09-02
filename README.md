@@ -23,22 +23,31 @@ cp .env.example .env.local
 
 The project needs Google Authentication enabled and a Realtime Database at the configured URL. Until those variables are supplied, pressing **Sign In** reports that Firebase needs configuration; the rest of the frontend remains usable.
 
-## Historical camera lesson
+## Standalone OpenCV camera demo
 
-The first lesson includes an unfinished webcam experiment in `CV/`. It expects a local webcam and listens on port 5000. This component has not been restored or validated; the frontend expects Socket.IO `video_frame` events, while the backend exposes an HTTP `/video` stream and only logs Socket.IO connections. It may therefore start without displaying a stream.
-
-The original dependency list also omits `Flask` and `Flask-SocketIO`, even though `webcam.py` imports them. They must be installed manually to experiment with the historical service. Use Python 3.10 or 3.11 (TensorFlow 2.14 does not support newer Python releases), then from a second terminal:
+The camera demo is intentionally separate from the lessons page. Run the website in one terminal, then start this service in a second terminal:
 
 ```bash
 cd CV
-python3.10 -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
-pip install Flask Flask-SocketIO
-python webcam.py
+pip install -r requirements-demo.txt
+python hello.py
 ```
 
-The model files are tracked in `CV/Model`; the service needs permission to use your webcam. No changes have been made to make this experiment functional.
+Open [http://localhost:5000/video](http://localhost:5000/video) in its own browser tab. It streams the default webcam as MJPEG and may prompt you to give the terminal camera permission. Stop the service with `Ctrl+C`.
+
+On macOS, AirPlay Receiver may already use port 5000. Leave it running and use a different port instead:
+
+```bash
+PORT=5050 python hello.py
+```
+
+Then open [http://localhost:5050/video](http://localhost:5050/video).
+
+### Historical classifier source
+
+`CV/webcam.py` and `CV/Model/` are the separate hackathon-era hand-classification experiment. They remain unchanged and are not connected to the lessons page or the standalone camera demo. Its original dependency list omits `Flask` and `Flask-SocketIO`, and TensorFlow 2.14 requires Python 3.10 or 3.11; it is preserved for reference rather than treated as a supported launch path.
 
 ## Checks
 
