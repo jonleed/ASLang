@@ -109,10 +109,11 @@ while True:
         #cv2.imshow("Image", imgOutput)
         key = cv2.waitKey(1)
     except:
-        pass'''
+pass'''
 
 from flask import Flask, Response
 import cv2
+import os
 from cvzone.HandTrackingModule import HandDetector
 from cvzone.ClassificationModule import Classifier
 import numpy as np
@@ -192,5 +193,6 @@ def video():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host="0.0.0.0")
+    port = int(os.environ.get("PORT", "5000"))
+    socketio.run(app, host="0.0.0.0", port=port, allow_unsafe_werkzeug=True)
     #app.run(debug=True, host="0.0.0.0")

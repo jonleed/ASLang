@@ -1,0 +1,8 @@
+Flask==3.0.0
+Flask-SocketIO==5.3.6
+cvzone==1.6.1
+mediapipe==0.10.5
+numpy==1.26.0
+opencv-python==4.8.1.78
+tensorflow-macos==2.14.0
+tensorflow-metal==1.1.0
