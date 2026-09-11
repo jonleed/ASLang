@@ -154,6 +154,10 @@ def generate_frames():
             # Isolate box around hand
             imgBlack = np.ones((imgSize, imgSize, 3), np.uint8) * 255
             imgCrop = img[y-offset : y+h+offset , x-offset : x+w+offset]
+            # MediaPipe can retain a hand for one frame after it has left the
+            # camera. Do not resize that empty crop; keep streaming instead.
+            if imgCrop.size == 0 or w <= 0 or h <= 0:
+                continue
             imgCropShape = imgCrop.shape
 
             # Fill the screen with smaller images
